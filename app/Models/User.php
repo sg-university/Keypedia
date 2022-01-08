@@ -29,8 +29,8 @@ class User extends Authenticatable
 
     public function carts()
     {
-        // user one-to-many [cart]
-        return $this->hasMany(Cart::class, 'user_id');
+        // user one-to-one [cart]
+        return $this->hasOne(Cart::class, 'user_id');
     }
 
     public function transactions()

@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,4 +17,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+Route::get('/test', function (Request $request) {
+    $response = ['message' => 'passed', 'data' => null];
+    try {
+        $loginController = new LoginController();
+        $loginController->test();
+
+        $registerController = new RegisterController();
+        $registerController->test();
+    } catch (Throwable $th) {
+        $response = ['message' => 'failed', 'data' => $th];
+    }
+
+    dd($response);
 });

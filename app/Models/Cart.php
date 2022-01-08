@@ -14,7 +14,7 @@ class Cart extends Model
 
     public function user()
     {
-        // [cart] many-to-one user
+        // [cart] one-to-one user
         return $this->belongsTo(User::class, 'user_id');
     }
 
