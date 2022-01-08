@@ -15,10 +15,10 @@ use Illuminate\Support\Str;
 
 class AuthenticationController extends Controller
 {
-    public $MESSAGE_REGISTER_CREDENTIALS_VALID = 'Suceed to register.';
+    public $MESSAGE_REGISTER_CREDENTIALS_VALID = 'Succeed to register.';
     public $MESSAGE_REGISTER_CREDENTIALS_VALIDATION_FAILED = 'Failed to register because credentials validation failed.';
 
-    public $MESSAGE_LOGIN_CREDENTIALS_VALID = 'Suceed to login.';
+    public $MESSAGE_LOGIN_CREDENTIALS_VALID = 'Succeed to login.';
     public $MESSAGE_LOGIN_CREDENTIALS_INVALID = 'Failed to login because invalid credentials.';
     public $MESSAGE_LOGIN_CREDENTIALS_VALIDATION_FAILED = 'Failed to login because credentials validation failed.';
 
@@ -69,12 +69,12 @@ class AuthenticationController extends Controller
             $credentials,
             [
                 'name' => 'required',
-                'username' => 'required|min:5|unique:User,username',
-                'email' => 'required|email|unique:User,email',
+                'username' => 'required|min:5|unique:user,username',
+                'email' => 'required|email|unique:user,email',
                 'password' => 'required|min:8',
                 'password_confirmation' => 'required|same:password|min:8',
                 'address' => 'required|min:10',
-                'gender' => 'required|exists:gender,name',
+                'gender_id' => 'required|exists:gender,id',
                 'dob' => 'required|date'
             ]
         );
@@ -97,7 +97,7 @@ class AuthenticationController extends Controller
         $user->email = $credentials['email'];
         $user->password = $credentials['password'];
         $user->name = $credentials['name'];
-        $user->gender_id = Gender::where('name', $credentials['gender'])->first()->id;
+        $user->gender_id = $credentials['gender_id'];
         $user->address = $credentials['address'];
         $user->dob = $credentials['dob'];
         return $user;
@@ -112,9 +112,10 @@ class AuthenticationController extends Controller
             'password' => "12345678",
             'password_confirmation' => "12345678",
             'name' => $faker->name,
-            'gender' => Gender::all()->random(1)->first()->name,
+            'gender_id' => Gender::all()->random(1)->first()->id,
             'address' => $faker->address,
-            'dob' => date("Y-m-d H:i:s")
+            'dob' => date("Y-m-d H:i:s"),
+            'a' => 'x'
         ];
 
         $credentialsValidationFailed = [
@@ -124,7 +125,7 @@ class AuthenticationController extends Controller
             'password' => null,
             'password_confirmation' => null,
             'name' =>  null,
-            'gender' => null,
+            'gender_id' => null,
             'address' => null,
             'dob' => null
         ];

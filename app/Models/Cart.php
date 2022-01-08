@@ -22,6 +22,6 @@ class Cart extends Model
     {
         // [cart] many-to-many keyboard
         // [cart] one-to-many cart_keyboard many-to-one keyboard
-        return $this->belongsToMany(Keyboard::class, 'cart_keyboard', 'cart_id', 'keyboard_id');
+        return $this->belongsToMany(Keyboard::class, 'cart_keyboard', 'cart_id', 'keyboard_id')->withPivot('id', 'quantity')->using(CartKeyboard::class)->withTimestamps();;
     }
 }

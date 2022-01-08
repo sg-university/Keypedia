@@ -11,10 +11,10 @@ use Illuminate\Testing\Assert;
 
 class UserController extends Controller
 {
-    public $MESSAGE_READ_ONE_USER_BY_ID_VALID = 'Suceed to read one user by id.';
+    public $MESSAGE_READ_ONE_USER_BY_ID_VALID = 'Succeed to read one user by id.';
     public $MESSAGE_READ_ONE_USER_BY_ID_VALIDATION_FAILED = 'Failed to read one user by id because validation failed.';
 
-    public $MESSAGE_CHANGE_USER_PASSWORD_BY_ID_VALID = 'Suceed to change one user pasword by id.';
+    public $MESSAGE_CHANGE_USER_PASSWORD_BY_ID_VALID = 'Succeed to change one user pasword by id.';
     public $MESSAGE_CHANGE_USER_PASSWORD_BY_ID_INVALID = 'Failed to change one user pasword by id because invalid credentials.';
     public $MESSAGE_CHANGE_USER_PASSWORD_BY_ID_VALIDATION_FAILED = 'Failed to change one user pasword by id because validation failed.';
 
@@ -22,7 +22,7 @@ class UserController extends Controller
     {
         $validation = Validator::make(
             ['id' => $id],
-            ['id' => 'required|exists:User,id']
+            ['id' => 'required|exists:user,id']
         );
 
         if ($validation->fails()) {
@@ -40,7 +40,7 @@ class UserController extends Controller
         $validation = Validator::make(
             $credentials,
             [
-                'id' => 'required|exists:User,id',
+                'id' => 'required|exists:user,id',
                 'password' => 'required|min:8',
                 'new_password' => 'required|min:8',
                 'new_password_confirmation' => 'required|same:new_password|min:8',

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
 
-class UpdateCategoryPageController extends Controller
+class CategoryUpdatePageController extends Controller
 {
     public $categoryController;
 
@@ -21,7 +21,7 @@ class UpdateCategoryPageController extends Controller
     public function index()
     {
         $categryId = request()->categoryId;
-        $data = ['categories' => $this->readOneCategoryById($categryId)];
+        $data = ['category' => $this->readOneCategoryById($categryId)];
         return view('', $data);
     }
 

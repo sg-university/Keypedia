@@ -21,7 +21,7 @@ class HeaderComponentController extends Controller
     public function index()
     {
         $userId = request()->userId;
-        $data = ['user' => $this->readOneUserById($userId)];
+        $data = ['user' => $this->readOneUserById($userId), 'date_time' => date('Y-m-d H:i:s')];
         return view('', $data);
     }
 

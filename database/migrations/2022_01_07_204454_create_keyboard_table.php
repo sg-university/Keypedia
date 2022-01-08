@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class CreateKeyboardTable extends Migration
 {
@@ -38,9 +39,9 @@ class CreateKeyboardTable extends Migration
             // ["price", "decimal(19,0)", "YES", "", null, ""]
             $table->decimal('price', 19, 0);
             // ["description", "text", "YES", "", null, ""]
-            $table->text('description');
-            // ["image_id", "decimal(19,0)", "YES", "", null, ""]
-            $table->decimal('image_id', 19, 0)->autoIncrement();
+            $table->uuid('description');
+            // ["image_id", "uuid", "YES", "", null, ""]
+            $table->uuid('image_id', 19, 0);
             $table->timestamps();
         });
     }

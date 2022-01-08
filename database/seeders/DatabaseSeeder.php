@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
 use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Gender;
@@ -42,10 +42,10 @@ class DatabaseSeeder extends Seeder
             'role_id' => 1,
             'username' => Str::random(5),
             'email' => $faker->email,
-            'password' => Str::random(8),
+            'password' =>  Str::random(8),
             'name' => $faker->name,
             'gender_id' => $faker->numberBetween(1, 3),
-            'address' => Str::random(10),
+            'address' =>  Str::random(10),
             'dob' => date("Y-m-d H:i:s")
         ]);
 
@@ -55,16 +55,16 @@ class DatabaseSeeder extends Seeder
                 'role_id' => $faker->numberBetween(2, 3),
                 'username' => Str::random(5),
                 'email' => $faker->email,
-                'password' => Str::random(8),
+                'password' =>  Str::random(8),
                 'name' => $faker->name,
                 'gender_id' => $faker->numberBetween(1, 3),
-                'address' => Str::random(10),
+                'address' =>  Str::random(10),
                 'dob' => date("Y-m-d H:i:s")
             ]);
         }
 
         for ($i = 1; $i <= 5; $i++) {
-            Category::create(['id' => $i, 'name' => Str::random(5), 'image_id' => $i]);
+            Category::create(['id' => $i, 'name' => $faker->name, 'image_id' => $faker->randomNumber()]);
         }
 
         for ($i = 1; $i <= 15; $i++) {
@@ -93,12 +93,14 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        for ($i = 1; $i <= 15; $i++) {
-            Transaction::find($i)->keyboards()->attach(Keyboard::all()->random($faker->numberBetween(1, 15)), ['quantity' => $faker->numberBetween(1, 5)]);
+        for ($i = 0; $i < 15 * 15; $i++) {
+            $x = ($i % 15) + 1;
+            Transaction::find($x)->keyboards()->attach(Keyboard::all()->random($faker->numberBetween(1, 15)), ['quantity' => $faker->numberBetween(1, 5)]);
         }
 
-        for ($i = 1; $i <= 5; $i++) {
-            Cart::find($i)->keyboards()->attach(Keyboard::all()->random($faker->numberBetween(1, 15)), ['quantity' => $faker->numberBetween(1, 5)]);
+        for ($i = 0; $i < 5 * 5; $i++) {
+            $x = ($i % 5) + 1;
+            Cart::find($x)->keyboards()->attach(Keyboard::all()->random($faker->numberBetween(1, 15)), ['quantity' => $faker->numberBetween(1, 5)]);
         }
     }
 }

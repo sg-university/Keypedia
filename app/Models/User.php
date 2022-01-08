@@ -27,7 +27,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');
     }
 
-    public function carts()
+    public function cart()
     {
         // user one-to-one [cart]
         return $this->hasOne(Cart::class, 'user_id');
