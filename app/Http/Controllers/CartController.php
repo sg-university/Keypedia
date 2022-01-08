@@ -18,7 +18,9 @@ use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
-    public $MESSAGE_READ_ALL_CART_VALID = 'Succeed to read all cart keyboard.';
+    public $MESSAGE_READ_ALL_CART_VALID = 'Succeed to read all cart.';
+
+    public $MESSAGE_READ_ALL_CART_KEYBOARD_VALID = 'Succeed to read all cart keyboard.';
 
     public $MESSAGE_READ_ONE_CART_KEYBOARD_BY_ID_VALID = 'Succeed to read one cart keyboard by id.';
     public $MESSAGE_READ_ONE_CART_KEYBOARD_BY_ID_VALIDATION_FAILED = 'Failed to read one cart keyboard by id because validation failed.';
@@ -36,10 +38,14 @@ class CartController extends Controller
     public $MESSAGE_CHECKOUT_CART_BY_USER_ID_INVALID = 'Failed to checkout cart by user id because cart not found.';
     public $MESSAGE_CHECKOUT_CART_BY_USER_ID_VALIDATION_FAILED = 'Failed to checkout cart by user id because validation failed.';
 
+    public function readAllCart()
+    {
+        return ['message' => $this->MESSAGE_READ_ALL_CART_VALID, 'data' => Cart::all()];
+    }
 
     public function readAllCartKeyboard()
     {
-        return ['message' => $this->MESSAGE_READ_ALL_CART_VALID, 'data' => Cart::all()->keyboards];
+        return ['message' => $this->MESSAGE_READ_ALL_CART_KEYBOARD_VALID, 'data' => Cart::all()->keyboards];
     }
 
     public function createOneCartKeyboardByUserId($userId, $cartKeyboardToCreateByUserId)
@@ -235,14 +241,8 @@ class CartController extends Controller
 
     public function testCheckoutCartByUserId()
     {
-        $users = User::all()->random(2);
-        $userCartValid = $users[0];
-        $userCartInvalid = $users[1];
-
-        $cart = $this->createOneCartKeyboardByUserId($userCartValid->id, [
-            'keyboard_id' => Keyboard::all()->random(1)->first()->id,
-            'quantity' => rand(1, 10),
-        ]);
+        $userCartValid = User::where('id', '!=', 99)->get()->random(1)->first();
+        $userCartInvalid = User::where('id', 99)->get()->first();
 
         $checkoutCartByUserIdValid = $this->checkoutCartByUserId($userCartValid->id);
         $checkoutCartByUserIdInvalid = $this->checkoutCartByUserId($userCartInvalid->id);
