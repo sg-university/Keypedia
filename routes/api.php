@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginPageController;
 use App\Http\Controllers\RegisterPageController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -43,6 +44,9 @@ Route::get('/test', function (Request $request) {
 
         $cartController = new CartController();
         $cartController->test();
+
+        $transactionController = new TransactionController();
+        $transactionController->test();
     } catch (Throwable $th) {
         $response = ['message' => 'failed', 'data' => $th];
     }
