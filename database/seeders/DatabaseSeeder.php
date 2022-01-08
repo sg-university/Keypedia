@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Gender;
@@ -39,12 +40,12 @@ class DatabaseSeeder extends Seeder
         User::create([
             'id' => 99,
             'role_id' => 1,
-            'username' => $faker->userName,
+            'username' => Str::random(5),
             'email' => $faker->email,
-            'password' => $faker->password,
+            'password' => Str::random(8),
             'name' => $faker->name,
             'gender_id' => $faker->numberBetween(1, 3),
-            'address' => $faker->address,
+            'address' => Str::random(10),
             'dob' => date("Y-m-d H:i:s")
         ]);
 
@@ -52,25 +53,25 @@ class DatabaseSeeder extends Seeder
             User::create([
                 'id' => $i,
                 'role_id' => $faker->numberBetween(2, 3),
-                'username' => $faker->userName,
+                'username' => Str::random(5),
                 'email' => $faker->email,
-                'password' => $faker->password,
+                'password' => Str::random(8),
                 'name' => $faker->name,
                 'gender_id' => $faker->numberBetween(1, 3),
-                'address' => $faker->address,
+                'address' => Str::random(10),
                 'dob' => date("Y-m-d H:i:s")
             ]);
         }
 
         for ($i = 1; $i <= 5; $i++) {
-            Category::create(['id' => $i, 'name' => $faker->name, 'image_id' => $faker->randomNumber()]);
+            Category::create(['id' => $i, 'name' => Str::random(5), 'image_id' => $i]);
         }
 
         for ($i = 1; $i <= 15; $i++) {
             Keyboard::create([
                 'id' => $i,
-                'name' => $faker->name,
-                'description' => $faker->text,
+                'name' => Str::random(5),
+                'description' => Str::random(20),
                 'category_id' => $faker->numberBetween(1, 5),
                 'price' => $faker->numberBetween(100000, 1000000),
                 'image_id' => $faker->randomNumber(),
