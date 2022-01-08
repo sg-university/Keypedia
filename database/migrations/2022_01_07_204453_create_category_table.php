@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class CreateCategoryTable extends Migration
 {
@@ -26,8 +27,8 @@ class CreateCategoryTable extends Migration
             $table->id();
             // ["name", "text", "YES", "", null, ""]
             $table->text('name');
-            // ["image_id", "decimal(19,0)", "YES", "", null, ""]
-            $table->decimal('image_id', 19, 0)->autoIncrement();
+            // ["image_id", "uuid", "YES", "", null, ""]
+            $table->uuid('image_id');
             $table->timestamps();
         });
     }

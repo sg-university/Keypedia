@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\KeyboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginPageController;
@@ -35,6 +37,12 @@ Route::get('/test', function (Request $request) {
 
         $categoryController = new CategoryController();
         $categoryController->test();
+
+        $keyboardController = new KeyboardController();
+        $keyboardController->test();
+
+        $cartController = new CartController();
+        $cartController->test();
     } catch (Throwable $th) {
         $response = ['message' => 'failed', 'data' => $th];
     }

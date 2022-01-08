@@ -9,25 +9,29 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
 
-class LoginPageController extends Controller
+class CategoryManagePageController extends Controller
 {
-    private $authenticationController;
+    public $categoryController;
 
     public function __construct()
     {
-        $this->authenticationController = new AuthenticationController();
+        $this->categoryController = new CategoryController();
     }
 
     public function index()
     {
-        $data = [];
+        $data = ['categories' => $this->readAllCategory()];
         return view('', $data);
     }
 
-    // login by model user by email and password with validation
-    public function login($credentials)
+    public function readAllCategory()
     {
-        return $this->authenticationController->login($credentials);
+        return $this->categoryController->readAllCategory();
+    }
+
+    public function deleteOneCategoryById($id)
+    {
+        return $this->categoryController->deleteOneCategoryById($id);
     }
 
     // test all method in this controller

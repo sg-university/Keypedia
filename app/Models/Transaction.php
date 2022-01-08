@@ -22,6 +22,6 @@ class Transaction extends Model
     {
         // [transaction] many-to-many keyboard
         // [transaction] one-to-many transaction_keyboard many-to-one keyboard
-        return $this->belongsToMany(Keyboard::class, 'transaction_keyboard', 'transaction_id', 'keyboard_id');
+        return $this->belongsToMany(Keyboard::class, 'transaction_keyboard', 'transaction_id', 'keyboard_id')->withPivot('id', 'quantity')->using(TransactionKeyboard::class)->withTimestamps();;
     }
 }

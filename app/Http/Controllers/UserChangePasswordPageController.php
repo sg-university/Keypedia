@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
 
-class ChangePasswordPageController extends Controller
+class UserChangePasswordPageController extends Controller
 {
     private $userController;
 
