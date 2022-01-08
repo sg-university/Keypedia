@@ -40,7 +40,7 @@ class CreateKeyboardTable extends Migration
             // ["description", "text", "YES", "", null, ""]
             $table->text('description');
             // ["image_id", "decimal(19,0)", "YES", "", null, ""]
-            $table->decimal('image_id', 19, 0);
+            $table->decimal('image_id', 19, 0)->autoIncrement();
             $table->timestamps();
         });
     }

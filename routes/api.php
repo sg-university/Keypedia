@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\LoginPageController;
+use App\Http\Controllers\RegisterPageController;
+use App\Http\Controllers\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,11 +27,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/test', function (Request $request) {
     $response = ['message' => 'passed', 'data' => null];
     try {
-        $loginController = new LoginController();
-        $loginController->test();
+        $authenticationController = new AuthenticationController();
+        $authenticationController->test();
 
-        $registerController = new RegisterController();
-        $registerController->test();
+        $userController = new UserController();
+        $userController->test();
+
+        $categoryController = new CategoryController();
+        $categoryController->test();
     } catch (Throwable $th) {
         $response = ['message' => 'failed', 'data' => $th];
     }

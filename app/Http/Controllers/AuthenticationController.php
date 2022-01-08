@@ -13,15 +13,52 @@ use Illuminate\Testing\Assert;
 use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 
-class RegisterController extends Controller
+class AuthenticationController extends Controller
 {
-    public $MESSAGE_REGISTER_CREDENTIALS_VALIDATION_FAILED = 'Failed to register because credentials validation failed';
-    public $MESSAGE_REGISTER_CREDENTIALS_INVALID = 'Failed to register because invalid credentials';
-    public $MESSAGE_REGISTER_CREDENTIALS_VALID = 'Suceed to register';
+    public $MESSAGE_REGISTER_CREDENTIALS_VALID = 'Suceed to register.';
+    public $MESSAGE_REGISTER_CREDENTIALS_VALIDATION_FAILED = 'Failed to register because credentials validation failed.';
 
-    public function index()
+    public $MESSAGE_LOGIN_CREDENTIALS_VALID = 'Suceed to login.';
+    public $MESSAGE_LOGIN_CREDENTIALS_INVALID = 'Failed to login because invalid credentials.';
+    public $MESSAGE_LOGIN_CREDENTIALS_VALIDATION_FAILED = 'Failed to login because credentials validation failed.';
+
+    // login by model user by email and password with validation
+    public function login($credentials)
     {
-        return view();
+        // validation
+        $validation = Validator::make(
+            $credentials,
+            [
+                'email' => 'required|email',
+                'password' => 'required',
+            ]
+        );
+
+        if ($validation->fails()) {
+            return ['message' => $this->MESSAGE_LOGIN_CREDENTIALS_VALIDATION_FAILED, 'data' => $validation->errors()];
+        }
+
+        $user = User::where('email', $credentials['email'])->where('password', $credentials['password'])->first();
+        if (!$user) {
+            return ['message' => $this->MESSAGE_LOGIN_CREDENTIALS_INVALID, 'data' => null];
+        }
+        return ['message' => $this->MESSAGE_LOGIN_CREDENTIALS_VALID, 'data' => $user];
+    }
+
+    public function testLogin()
+    {
+        $user = User::all()->random(1)->first();
+        $credentialsValid = ['email' => $user->email, 'password' =>  $user->password];
+        $credentialsInvalid = ['email' => $user->email, 'password' => 'invalid'];
+        $credentialsValidationFailed = ['email' => 'invalid', 'password' => 'invalid'];
+
+        $loginValid = $this->login($credentialsValid);
+        $loginInvalid = $this->login($credentialsInvalid);
+        $loginCredentialsFailed = $this->login($credentialsValidationFailed);
+
+        Assert::assertEquals(['message' => $this->MESSAGE_LOGIN_CREDENTIALS_VALID, 'data' => $user], $loginValid);
+        Assert::assertEquals(['message' => $this->MESSAGE_LOGIN_CREDENTIALS_INVALID, 'data' => null], $loginInvalid);
+        Assert::assertEquals(['message' => $this->MESSAGE_LOGIN_CREDENTIALS_VALIDATION_FAILED, 'data' => $loginCredentialsFailed['data']], $loginCredentialsFailed);
     }
 
     // register by model user by email and password with validation
@@ -49,9 +86,6 @@ class RegisterController extends Controller
         $user = $this->mapCredentialsToUser($credentials);
         $user->save();
 
-        if (!$user) {
-            return ['message' => $this->MESSAGE_REGISTER_CREDENTIALS_INVALID, 'data' => null];
-        }
         return ['message' => $this->MESSAGE_REGISTER_CREDENTIALS_VALID, 'data' => $user,];
     }
 
@@ -69,12 +103,11 @@ class RegisterController extends Controller
         return $user;
     }
 
-    // test all method in this controller
-    public function test()
+    public function testRegister()
     {
         $faker = Faker::create();
         $credentialsValid = [
-            'username' => Str::random(8),
+            'username' => Str::random(5),
             'email' => $faker->email,
             'password' => "12345678",
             'password_confirmation' => "12345678",
@@ -102,5 +135,11 @@ class RegisterController extends Controller
 
         Assert::assertEquals(['message' => $this->MESSAGE_REGISTER_CREDENTIALS_VALID, 'data' => $registerValid['data']], $registerValid);
         Assert::assertEquals(['message' => $this->MESSAGE_REGISTER_CREDENTIALS_VALIDATION_FAILED, 'data' => $registerCredentialsFailed['data']], $registerCredentialsFailed);
+    }
+
+    public function test()
+    {
+        $this->testLogin();
+        $this->testRegister();
     }
 }

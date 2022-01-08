@@ -27,7 +27,7 @@ class CreateCategoryTable extends Migration
             // ["name", "text", "YES", "", null, ""]
             $table->text('name');
             // ["image_id", "decimal(19,0)", "YES", "", null, ""]
-            $table->decimal('image_id', 19, 0);
+            $table->decimal('image_id', 19, 0)->autoIncrement();
             $table->timestamps();
         });
     }
