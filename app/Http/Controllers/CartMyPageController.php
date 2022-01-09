@@ -41,7 +41,7 @@ class CartMyPageController extends Controller
 
     public function readOneKeyboardById($id)
     {
-        $return = $this->keyboardController->readKeyboardById($id);
+        return $this->keyboardController->readKeyboardById($id);
     }
 
 
