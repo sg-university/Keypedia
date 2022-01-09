@@ -16,46 +16,29 @@ use Illuminate\Support\Str;
 
 class TransactionHistoryDetailPageController extends Controller
 {
-    private $transactionController, keyboardController;
+    private $transactionController;
 
     public function __construct()
     {
         $this->transactionController = new TransactionController();
-        $this->keyboardController = new KeyboardController();
     }
 
     public function index()
     {
-        $userId = request()->userId;
         $transactionKeyboardId = request()->transactionKeyboardId;
 
-        $userTransactionKeyboards = $this->readAllTransactionKeyboardByUserId($userId);
         $transactionKeyboard =  $this->readOneTransactionKeyboardById($transactionKeyboardId);
         $keyboard = $this->readOneKeyboardById($transactionKeyboard['data']->keyboard_id);
         $data = [
-            'userTransactionKeboards' => $userTransactionKeyboards,
             'transactionKeyboard' => $transactionKeyboard,
             'keyboard' => $keyboard,
         ];
         return view('', $data);
     }
 
-    public function readAllTransactionKeyboardByUserId($userId)
-    {
-        $transactions = $this->transactionController->readAllTransaction();
-        $userTransactions = $transactions['data']->where('user_id', $userId);
-        $userTransactionKeyboards = $userTransactions->keyboards;
-        return $userTransactionKeyboards;
-    }
-
     public function readOneKeyboardById($id)
     {
-        $return = $this->keyboardController->readKeyboardById($id);
-    }
-
-    public function readAllTransactionKeyboard()
-    {
-        return $this->transactionController->readAllTransactionKeyboard();
+        return  $this->keyboardController->readKeyboardById($id);
     }
 
     public function readOneTransactionKeyboardById($id)

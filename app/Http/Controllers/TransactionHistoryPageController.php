@@ -16,12 +16,14 @@ use Illuminate\Support\Str;
 
 class TransactionHistoryPageController extends Controller
 {
-    private $transactionController;
+    private $transactionController, $keyboardController;
 
     public function __construct()
     {
         $this->transactionController = new TransactionController();
+        $this->keyboardController = new KeyboardController();
     }
+
 
     public function index()
     {
@@ -33,6 +35,11 @@ class TransactionHistoryPageController extends Controller
         return view('', $data);
     }
 
+    public function readAllTransactionKeyboard()
+    {
+        return $this->transactionController->readAllTransactionKeyboard();
+    }
+
     public function readAllTransactionKeyboardByUserId($userId)
     {
         $transactions = $this->transactionController->readAllTransaction();
@@ -41,14 +48,16 @@ class TransactionHistoryPageController extends Controller
         return $userTransactionKeyboards;
     }
 
-    public function readAllTransactionKeyboard()
-    {
-        return $this->transactionController->readAllTransactionKeyboard();
-    }
 
     public function readOneTransactionKeyboardById($id)
     {
         return $this->transactionController->readOneTransactionKeyboardById($id);
+    }
+
+
+    public function readOneKeyboardById($id)
+    {
+        return $this->keyboardController->readKeyboardById($id);
     }
 
 
