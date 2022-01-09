@@ -241,8 +241,8 @@ class CartController extends Controller
 
     public function testCheckoutCartByUserId()
     {
-        $userCartValid = User::where('id', '!=', 99)->get()->random(1)->first();
-        $userCartInvalid = User::where('id', 99)->get()->first();
+        $userCartValid = User::has('cart')->get()->random(1)->first();
+        $userCartInvalid = User::has('cart', '=', 0)->get()->first();
 
         $checkoutCartByUserIdValid = $this->checkoutCartByUserId($userCartValid->id);
         $checkoutCartByUserIdInvalid = $this->checkoutCartByUserId($userCartInvalid->id);
