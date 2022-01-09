@@ -25,7 +25,7 @@ class AuthenticationRegisterPageController extends Controller
     public function index()
     {
         $data = ['genders' => Gender::all()];
-        return view('', $data);
+        return view('register', $data);
     }
 
     // register by model user by email and password with validation

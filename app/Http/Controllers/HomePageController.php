@@ -21,7 +21,7 @@ class HomePageController extends Controller
     public function index()
     {
         $data = ['categories' => $this->readAllCategory()];
-        return view('', $data);
+        return view('customer.index', $data);
     }
 
     public function readAllCategory()

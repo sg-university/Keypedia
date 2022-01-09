@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
+use App\Form;
 
 class AuthenticationLoginPageController extends Controller
 {
@@ -21,13 +22,25 @@ class AuthenticationLoginPageController extends Controller
     public function index()
     {
         $data = [];
-        return view('', $data);
+        return view('login', $data);
     }
 
     // login by model user by email and password with validation
-    public function login($credentials)
+    public function login(Request $credentials)
     {
-        return $this->authenticationController->login($credentials);
+        $result =  $this->authenticationController->login($credentials->toArray());
+
+        switch ($result['message']) {
+            case $this->authenticationController->MESSAGE_LOGIN_CREDENTIALS_VALID:
+                return redirect()->route('customer.home.index');
+                break;
+            case $this->authenticationController->MESSAGE_LOGIN_CREDENTIALS_INVALID:
+                return redirect()->back()->withErrors([$result['message']]);
+                break;
+            default:
+                return redirect()->back()->withErrors($result['data']);
+                break;
+        }
     }
 
     // test all method in this controller
