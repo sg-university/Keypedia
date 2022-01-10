@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class CartMyPageController extends Controller
@@ -26,17 +27,24 @@ class CartMyPageController extends Controller
 
     public function index()
     {
-        $userId = request()->userId;
-        $cartKeyboardId = request()->cartKeyboardId;
-
+        $user = Auth::user();
+        $userId = $user->id;
         $userCartKeyboards = $this->readAllCartKeyboardByUserId($userId);
-        $cartKeyboard =  $this->readOneCartKeyboardById($cartKeyboardId);
-        $keyboard = $this->readOneKeyboardById($cartKeyboard['data']->keyboard_id);
         $data = [
-            'userCartKeboards' => $userCartKeyboards,
-            'cartKeyboard' => $cartKeyboard,
-            'keyboard' => $keyboard,
+            'user' => $user,
+            'userCartKeyboards' => $userCartKeyboards,
         ];
+        return RouteController::view('cart', $data);
+    }
+
+    public function checkoutCartByUserId($id)
+    {
+        $userCartKeyboardsResult = $this->cartController->checkoutCartByUserId($id);
+        if ($userCartKeyboardsResult['message'] != $this->cartController->MESSAGE_CHECKOUT_CART_BY_USER_ID_VALID) {
+            return redirect()->back()->withErrors($userCartKeyboardsResult['data'])->withInput();
+        }
+
+        return redirect()->back()->with($userCartKeyboardsResult);
     }
 
     public function readOneKeyboardById($id)
@@ -50,10 +58,10 @@ class CartMyPageController extends Controller
         return $this->cartController->readAllCartKeyboard();
     }
 
-    public function readAllCartKeyboardByUserId($userId)
+    public function readAllCartKeyboardByUserId($id)
     {
         $carts = $this->cartController->readAllCart();
-        $userCarts = $carts['data']->where('user_id', $userId);
+        $userCarts = $carts['data']->where('user_id', $id)->first();
         $userCartKeyboards = $userCarts->keyboards;
         return $userCartKeyboards;
     }
@@ -63,9 +71,26 @@ class CartMyPageController extends Controller
         return $this->cartController->readOneCartKeyboardById($id);
     }
 
-    public function updateOneCartKeyboardById($id, $cartKeyboardToUpdate)
+    public function updateOneCartKeyboardById($id, Request $request)
     {
-        return $this->cartController->updateOneCartKeyboardById($id, $cartKeyboardToUpdate);
+        $cartKeyboardToUpdate = [
+            'quantity' => $request->quantity,
+            'keyboard_id' => $request->keyboard_id,
+        ];
+
+        $cartKeyboardResult = $this->cartController->updateOneCartKeyboardById($id, $cartKeyboardToUpdate);
+
+        switch ($cartKeyboardResult['message']) {
+            case $this->cartController->MESSAGE_CHECKOUT_CART_BY_USER_ID_VALID:
+                return redirect()->back()->with($cartKeyboardResult);
+                break;
+            case $this->cartController->MESSAGE_CHECKOUT_CART_BY_USER_ID_INVALID:
+                return redirect()->back()->withErrors([$cartKeyboardResult['message']])->withInput();
+                break;
+            default:
+                return redirect()->back()->withErrors($cartKeyboardResult['data'])->withInput();
+                break;
+        }
     }
 
     public function deleteOneCartKeyboardById($id)

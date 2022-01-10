@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
-use App\Form;
+use Illuminate\Support\Facades\Auth;
 
 class AuthenticationLoginPageController extends Controller
 {
@@ -32,13 +32,14 @@ class AuthenticationLoginPageController extends Controller
 
         switch ($result['message']) {
             case $this->authenticationController->MESSAGE_LOGIN_CREDENTIALS_VALID:
+                Auth::login($result['data']);
                 return redirect()->route('customer.home.index');
                 break;
             case $this->authenticationController->MESSAGE_LOGIN_CREDENTIALS_INVALID:
-                return redirect()->back()->withErrors([$result['message']]);
+                return redirect()->back()->withErrors([$result['message']])->withInput();
                 break;
             default:
-                return redirect()->back()->withErrors($result['data']);
+                return redirect()->back()->withErrors($result['data'])->withInput();
                 break;
         }
     }

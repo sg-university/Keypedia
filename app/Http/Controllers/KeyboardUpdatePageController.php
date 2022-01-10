@@ -11,18 +11,27 @@ use Illuminate\Testing\Assert;
 
 class KeyboardUpdatePageController extends Controller
 {
-    public $keyboardController;
+    public $keyboardController, $categoryController;
 
     public function __construct()
     {
         $this->keyboardController = new KeyboardController();
+        $this->categoryController = new CategoryController();
     }
 
-    public function index()
+    public function index($id)
     {
-        $categryId = request()->keyboardId;
-        $data = ['keyboard' => $this->readOneKeyboardById($categryId)];
-        return view('', $data);
+        $categoriesResult =  $this->readAllCategory();
+        $categories = $categoriesResult['data'];
+        $keyboardResult =  $this->readOneKeyboardById($id);
+        $keyboard = $keyboardResult['data'];
+        $data = ['keyboard' => $keyboard, 'categories' => $categories];
+        return RouteController::view('update', $data);
+    }
+
+    public function readAllCategory()
+    {
+        return $this->categoryController->readAllCategory();
     }
 
     public function readOneKeyboardById($id)
@@ -30,9 +39,26 @@ class KeyboardUpdatePageController extends Controller
         return $this->keyboardController->readOneKeyboardById($id);
     }
 
-    public function updateOneKeyboardById($id, $keyboardToUpdate)
+    public function updateOneKeyboardById($id, Request $request)
     {
-        return $this->keyboardController->updateOneKeyboardById($id, $keyboardToUpdate);
+        $keyboardToUpdate = [
+            'name' => $request->name,
+            'price' => $request->price,
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'image' => $request->image,
+        ];
+
+        $keyboardResult = $this->keyboardController->updateOneKeyboardById($id, $keyboardToUpdate);
+
+        switch ($keyboardResult['message']) {
+            case $this->keyboardController->MESSAGE_UPDATE_ONE_KEYBOARD_BY_ID_VALID:
+                return redirect()->back()->with($keyboardResult);
+                break;
+            default:
+                return redirect()->back()->withErrors($keyboardResult['data'])->withInput();
+                break;
+        }
     }
 
     // test all method in this controller

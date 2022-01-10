@@ -20,8 +20,10 @@ class CategoryManagePageController extends Controller
 
     public function index()
     {
-        $data = ['categories' => $this->readAllCategory()];
-        return view('', $data);
+        $categoriesResult =  $this->readAllCategory();
+        $categories = $categoriesResult['data'];
+        $data = ['categories' => $categories];
+        return RouteController::view('manage', $data);
     }
 
     public function readAllCategory()
@@ -31,6 +33,16 @@ class CategoryManagePageController extends Controller
 
     public function deleteOneCategoryById($id)
     {
+        $categoryResult = $this->categoryController->deleteOneCategoryById($id);
+
+        switch ($categoryResult['message']) {
+            case $this->categoryController->MESSAGE_DELETE_ONE_CATEGORY_BY_ID_VALID:
+                return redirect()->back()->with($categoryResult);
+                break;
+            default:
+                return redirect()->back()->withErrors($categoryResult['data'])->withInput();
+                break;
+        }
         return $this->categoryController->deleteOneCategoryById($id);
     }
 

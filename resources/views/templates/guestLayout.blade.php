@@ -1,3 +1,12 @@
+@php
+use App\Http\Controllers\HeaderComponentController;
+
+$headerComponentController = new HeaderComponentController();
+$categoriesResult = $headerComponentController->readAllCategory();
+$categories = $categoriesResult['data'];
+@endphp
+
+
 <!doctype html>
 <html lang="en">
 
@@ -9,13 +18,12 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
     <title>Hello, world!</title>
 </head>
 
-<body>
-
-    <div class="container d-flex justify-content-center my-5">
+<body style="background-color: white">
+    {{-- Navbar --}}
+    <div class="container bg-white">
         <nav class="navbar navbar-expand-lg navbar-light ">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -32,40 +40,39 @@
                 <form class="form-inline">
                     <div class="navbar-nav">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 Categories
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                @foreach ($categories as $category)
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{{ route('guest.keyboard.index', ['category_id' => $category->id]) }}">
+                                            {{ $category->name }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Role
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </li>
-                        <p class="nav-link"><?= date('D, j-F-Y') ?></p>
+                        <div class="navbar-nav">
+                            <a class="nav-link" href="{{ route('authentication.login.index') }}">Login</a>
+                            <a class="nav-link" href="{{ route('authentication.register.index') }}">Register</a>
+                            <p class="nav-link"><?= date('D, j-F-Y') ?></p>
+                        </div>
                     </div>
                 </form>
             </div>
 
         </nav>
     </div>
+    {{-- Akhir Navbar --}}
 
+    {{-- Konten --}}
 
+    @yield('content')
 
-    @yield('page-content')
+    {{-- Akhir konten --}}
 
 
     <footer class="sticky-footer bg-white">
@@ -85,6 +92,9 @@
     </script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
+        integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous">
     </script>
 </body>
 

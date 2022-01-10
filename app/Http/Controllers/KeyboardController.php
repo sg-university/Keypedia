@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
 use Faker\Factory as Faker;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\Input;
 
 class KeyboardController extends Controller
 {
@@ -51,6 +52,7 @@ class KeyboardController extends Controller
 
     public function createOneKeyboard($keyboardToCreate)
     {
+        $keyboardToCreate['image_id'] = Str::uuid()->toString();
         $validation = Validator::make(
             $keyboardToCreate,
             [
@@ -58,7 +60,8 @@ class KeyboardController extends Controller
                 'price' => 'required|integer|min:30 ',
                 'description' => 'required|min:20',
                 'category_id' => 'required|exists:category,id',
-                'image_id' => 'required|unique:keyboard,image_id'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image_id' => 'unique:keyboard,image_id'
             ]
         );
 
@@ -66,7 +69,17 @@ class KeyboardController extends Controller
             return ['message' => $this->MESSAGE_CREATE_ONE_KEYBOARD_VALIDATION_FAILED, 'data' => $validation->errors()];
         }
 
-        $keyboard =  Keyboard::create($keyboardToCreate);
+        $destinationPath = 'img/';
+        $fileName =  $keyboardToCreate['image_id'];
+        $keyboardToCreate['image']->move($destinationPath, $fileName);
+
+        $keyboard = new Keyboard();
+        $keyboard->name = $keyboardToCreate['name'];
+        $keyboard->price = $keyboardToCreate['price'];
+        $keyboard->description = $keyboardToCreate['description'];
+        $keyboard->category_id = $keyboardToCreate['category_id'];
+        $keyboard->image_id = $keyboardToCreate['image_id'];
+        $keyboard->save();
 
         return ['message' => $this->MESSAGE_CREATE_ONE_KEYBOARD_VALID, 'data' => $keyboard];
     }
@@ -74,6 +87,7 @@ class KeyboardController extends Controller
     public function updateOneKeyboardById($id, $keyboardToUpdate)
     {
         $keyboardToUpdate['id'] = $id;
+        $keyboardToUpdate['image_id'] = Str::uuid()->toString();
         $validation = Validator::make(
             $keyboardToUpdate,
             [
@@ -82,13 +96,18 @@ class KeyboardController extends Controller
                 'price' => 'required|integer|min:30 ',
                 'description' => 'required|min:20',
                 'category_id' => 'required|exists:category,id',
-                'image_id' => 'required|unique:keyboard,image_id'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image_id' => 'unique:keyboard,image_id'
             ]
         );
 
         if ($validation->fails()) {
             return ['message' => $this->MESSAGE_UPDATE_ONE_KEYBOARD_BY_ID_VALIDATION_FAILED, 'data' => $validation->errors()];
         }
+
+        $destinationPath = 'img/';
+        $fileName =  $keyboardToUpdate['image_id'];
+        $keyboardToUpdate['image']->move($destinationPath, $fileName);
 
         $keyboard =  Keyboard::find($id);
         $keyboard->name = $keyboardToUpdate['name'];

@@ -19,10 +19,31 @@ class KeyboardViewPageController extends Controller
         $this->categoryController = new CategoryController();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $data = [];
-        return view('', $data);
+        $categoryId = $request->query('category_id');
+        $categoryResult = $this->categoryController->readOneCategoryById($categoryId);
+        $category = $categoryResult['data'];
+        $keyboardsResult = $this->keyboardController->readAllKeyboard();
+        $keyboards = $keyboardsResult['data'];
+        $keyboardsFiltered = $keyboards->where('category_id', $categoryId)->all();
+
+        $data = ['category' => $category, 'keyboards' => $keyboardsFiltered];
+        return RouteController::view('view', $data);
+    }
+
+    public function searchAllKeyboardByKeywords(Request $request)
+    {
+        $keywords = $request->keywords;
+        $categoryId = $request->query('category_id');
+        $categoryResult = $this->categoryController->readOneCategoryById($categoryId);
+        $category = $categoryResult['data'];
+        $keyboardsResult = $this->keyboardController->readAllKeyboard();
+        $keyboards = $keyboardsResult['data'];
+        $keyboardsFiltered = $keyboards->where('category_id', $categoryId)->where('name', 'like', '%' . $keywords . '%')->all();
+
+        $data = ['category' => $category, 'keyboards' => $keyboardsFiltered];
+        return RouteController::view('view', $data);
     }
 
     public function readAllCategory()

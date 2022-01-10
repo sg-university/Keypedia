@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class TransactionHistoryPageController extends Controller
@@ -27,12 +28,13 @@ class TransactionHistoryPageController extends Controller
 
     public function index()
     {
-        $userId = request()->userId;
-        $userTransactionKeyboards = $this->readAllTransactionKeyboardByUserId($userId);
+        $user = Auth::user();
+        $userId = $user->id;
+        $userTransactions = $this->readAllTransactionByUserId($userId);
         $data = [
-            'userTransactionKeboards' => $userTransactionKeyboards,
+            'userTransactions' => $userTransactions,
         ];
-        return view('', $data);
+        return RouteController::view('history', $data);
     }
 
     public function readAllTransactionKeyboard()
@@ -40,11 +42,10 @@ class TransactionHistoryPageController extends Controller
         return $this->transactionController->readAllTransactionKeyboard();
     }
 
-    public function readAllTransactionKeyboardByUserId($userId)
+    public function readAllTransactionByUserId($userId)
     {
         $transactions = $this->transactionController->readAllTransaction();
-        $userTransactions = $transactions['data']->where('user_id', $userId);
-        $userTransactionKeyboards = $userTransactions->keyboards;
+        $userTransactionKeyboards = $transactions['data']->where('user_id', $userId)->all();
         return $userTransactionKeyboards;
     }
 

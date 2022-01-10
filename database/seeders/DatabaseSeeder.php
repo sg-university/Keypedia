@@ -38,16 +38,29 @@ class DatabaseSeeder extends Seeder
         }
 
         User::create([
-            'id' => 99,
+            'id' => 101,
             'role_id' => 1,
-            'username' => Str::random(5),
-            'email' => $faker->email,
-            'password' =>  Str::random(8),
-            'name' => $faker->name,
+            'username' => 'manager',
+            'email' => 'manager@mail.com',
+            'password' =>  '12345678',
+            'name' => 'manager',
             'gender_id' => $faker->numberBetween(1, 3),
             'address' =>  Str::random(10),
             'dob' => date("Y-m-d H:i:s")
         ]);
+
+        User::create([
+            'id' => 102,
+            'role_id' => 2,
+            'username' => 'customer',
+            'email' => 'customer@mail.com',
+            'password' =>  '12345678',
+            'name' => 'customer',
+            'gender_id' => $faker->numberBetween(1, 3),
+            'address' =>  Str::random(10),
+            'dob' => date("Y-m-d H:i:s")
+        ]);
+
 
         for ($i = 1; $i <= 5; $i++) {
             User::create([
@@ -64,7 +77,7 @@ class DatabaseSeeder extends Seeder
         }
 
         for ($i = 1; $i <= 5; $i++) {
-            Category::create(['id' => $i, 'name' => $faker->name, 'image_id' => $faker->randomNumber()]);
+            Category::create(['id' => $i, 'name' => $faker->name, 'image_id' => 1]);
         }
 
         for ($i = 1; $i <= 15; $i++) {
@@ -74,7 +87,7 @@ class DatabaseSeeder extends Seeder
                 'description' => Str::random(20),
                 'category_id' => $faker->numberBetween(1, 5),
                 'price' => $faker->numberBetween(100000, 1000000),
-                'image_id' => $faker->randomNumber(),
+                'image_id' => 1,
             ]);
         }
 

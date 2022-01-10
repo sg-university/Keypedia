@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Gender;
 use App\Models\Role;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
@@ -82,6 +83,8 @@ class AuthenticationController extends Controller
         if ($validation->fails()) {
             return ['message' => $this->MESSAGE_REGISTER_CREDENTIALS_VALIDATION_FAILED, 'data' => $validation->errors()];
         }
+
+        $credentials['dob'] = DateTime::createFromFormat('Y-m-d', $credentials['dob'])->format('Y-m-d H:i:s');
 
         $user = $this->mapCredentialsToUser($credentials);
         $user->save();

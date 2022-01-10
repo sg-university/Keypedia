@@ -23,23 +23,28 @@ class TransactionHistoryDetailPageController extends Controller
         $this->transactionController = new TransactionController();
     }
 
-    public function index()
+    public function index($id)
     {
-        $transactionKeyboardId = request()->transactionKeyboardId;
-
-        $transactionKeyboard =  $this->readOneTransactionKeyboardById($transactionKeyboardId);
-        $keyboard = $this->readOneKeyboardById($transactionKeyboard['data']->keyboard_id);
+        $transaction =  $this->readOneTransactionById($id);
         $data = [
-            'transactionKeyboard' => $transactionKeyboard,
-            'keyboard' => $keyboard,
+            'transaction' => $transaction
         ];
-        return view('', $data);
+        return RouteController::view('historydetail', $data);
+    }
+
+    public function readOneTransactionById($id)
+    {
+        $transactionsResult = $this->transactionController->readAllTransaction();
+        $transactions = $transactionsResult['data'];
+        $transaction = $transactions->where('id', $id)->first();
+        return $transaction;
     }
 
     public function readOneKeyboardById($id)
     {
         return  $this->keyboardController->readKeyboardById($id);
     }
+
 
     public function readOneTransactionKeyboardById($id)
     {
