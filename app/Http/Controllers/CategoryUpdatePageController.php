@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
+use Illuminate\Support\Str;
 
 class CategoryUpdatePageController extends Controller
 {
@@ -18,11 +19,15 @@ class CategoryUpdatePageController extends Controller
         $this->categoryController = new CategoryController();
     }
 
-    public function index()
+    public function index($id)
     {
-        $categryId = request()->categoryId;
-        $data = ['category' => $this->readOneCategoryById($categryId)];
-        return view('', $data);
+        $categoryResult = $this->readOneCategoryById($id);
+        if ($categoryResult['message'] != $this->categoryController->MESSAGE_READ_ONE_CATEGORY_BY_ID_VALID) {
+            return abort(404);
+        }
+        $category = $categoryResult['data'];
+        $data = ['category' => $category];
+        return RouteController::view('updateCategory', $data);
     }
 
     public function readOneCategoryById($id)
@@ -30,9 +35,24 @@ class CategoryUpdatePageController extends Controller
         return $this->categoryController->readOneCategoryById($id);
     }
 
-    public function updateOneCategoryById($id, $categoryToUpdate)
+    public function updateOneCategoryById($id, Request $request)
     {
-        return $this->categoryController->updateOneCategoryById($id, $categoryToUpdate);
+        $imageId = Str::uuid()->toString();
+        $categoryToUpdate = [
+            'name' => $request->name,
+            'image_id' => $imageId,
+        ];
+
+        $categoryResult = $this->categoryController->updateOneCategoryById($id, $categoryToUpdate);
+
+        switch ($categoryResult['message']) {
+            case $this->categoryController->MESSAGE_UPDATE_ONE_CATEGORY_BY_ID_VALID:
+                return redirect()->back()->with($categoryResult);
+                break;
+            default:
+                return redirect()->back()->withErrors($categoryResult['data'])->withInput();
+                break;
+        }
     }
 
     // test all method in this controller

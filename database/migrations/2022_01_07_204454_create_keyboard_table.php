@@ -39,9 +39,9 @@ class CreateKeyboardTable extends Migration
             // ["price", "decimal(19,0)", "YES", "", null, ""]
             $table->decimal('price', 19, 0);
             // ["description", "text", "YES", "", null, ""]
-            $table->uuid('description');
+            $table->text('description');
             // ["image_id", "uuid", "YES", "", null, ""]
-            $table->uuid('image_id', 19, 0);
+            $table->uuid('image_id')->nullable();
             $table->timestamps();
         });
     }

@@ -29,9 +29,18 @@ class AuthenticationRegisterPageController extends Controller
     }
 
     // register by model user by email and password with validation
-    public function register($credentials)
+    public function register(Request $credentials)
     {
-        return $this->authenticationController->register($credentials);
+        $result =  $this->authenticationController->register($credentials->toArray());
+
+        switch ($result['message']) {
+            case $this->authenticationController->MESSAGE_REGISTER_CREDENTIALS_VALID:
+                return redirect()->route('authentication.login.index');
+                break;
+            default:
+                return redirect()->back()->withErrors($result['data'])->withInput();
+                break;
+        }
     }
 
     // test all method in this controller

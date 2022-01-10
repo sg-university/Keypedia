@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\Assert;
@@ -20,9 +21,9 @@ class UserChangePasswordPageController extends Controller
 
     public function index()
     {
-        $userId = request()->userId;
-        $data = ['user' => $this->readOneUserById($userId)];
-        return view('', $data);
+        $user = Auth::user();
+        $data = ['user' => $user];
+        return RouteController::view('password', $data);
     }
 
     public function readOneUserById($id)
@@ -30,9 +31,26 @@ class UserChangePasswordPageController extends Controller
         return $this->userController->readOneUserById($id);
     }
 
-    public function changeUserPasswordById($id, $credentials)
+    public function changeUserPasswordById($id, Request $request)
     {
-        return $this->userController->changeUserPasswordById($id, $credentials);
+        $credentials = [
+            'password' => $request->password,
+            'new_password' => $request->new_password,
+            'new_password_confirmation' => $request->new_password_confirmation,
+        ];
+        $userResult =  $this->userController->changeUserPasswordById($id, $credentials);
+
+        switch ($userResult['message']) {
+            case $this->userController->MESSAGE_CHANGE_USER_PASSWORD_BY_ID_VALID:
+                return redirect()->back()->with($userResult)->withInput();
+                break;
+            case $this->userController->MESSAGE_CHANGE_USER_PASSWORD_BY_ID_INVALID:
+                return redirect()->back()->withErrors([$userResult['message']])->withInput();
+                break;
+            default:
+                return redirect()->back()->withErrors($userResult['data'])->withInput();
+                break;
+        }
     }
 
     // test all method in this controller

@@ -28,7 +28,7 @@ class CreateCategoryTable extends Migration
             // ["name", "text", "YES", "", null, ""]
             $table->text('name');
             // ["image_id", "uuid", "YES", "", null, ""]
-            $table->uuid('image_id');
+            $table->uuid('image_id')->nullable();
             $table->timestamps();
         });
     }

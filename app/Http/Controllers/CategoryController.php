@@ -48,11 +48,13 @@ class CategoryController extends Controller
     public function updateOneCategoryById($id, $categoryToUpdate)
     {
         $categoryToUpdate['id'] = $id;
+        $categoryToUpdate['image_id'] = Str::uuid()->toString();
         $validation = Validator::make(
             $categoryToUpdate,
             [
                 'id' => 'required|exists:category,id',
                 'name' => 'required|min:5|unique:category,name',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'image_id' => 'unique:category,image_id'
             ]
         );
@@ -60,6 +62,10 @@ class CategoryController extends Controller
         if ($validation->fails()) {
             return ['message' => $this->MESSAGE_UPDATE_ONE_CATEGORY_BY_ID_VALIDATION_FAILED, 'data' => $validation->errors()];
         }
+
+        $destinationPath = 'img/';
+        $fileName =  $categoryToUpdate['image_id'];
+        $$categoryToUpdate['image']->move($destinationPath, $fileName);
 
         $category =  Category::find($id);
         $category->name = $categoryToUpdate['name'];

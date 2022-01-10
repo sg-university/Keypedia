@@ -1,8 +1,8 @@
-@extends('templates.menulogin')
+@extends('templates.guestLayout')
 
-@section('page-content')
+@section('content')
 
-    <div class="row justify-content-center mt-5">
+    <div class="container d-flex justify-content-center my-5">
         <div class="col-md-4 border mt-5">
             <main class="form-sigin mt-5">
                 <h1 class="h3 mb-3 fw-normal text-center mt-5 mb-3">Login</h1>
@@ -16,7 +16,7 @@
                         </ul>
                     </div><br />
                 @endif
-                <form action="{{ route('login.api.login') }}" method="POST">
+                <form action="{{ route('authentication.login.api.login') }}" method="POST">
                     @csrf
 
                     <div class="form-floating mt-2">
@@ -30,7 +30,6 @@
                         <input type="password" name="password" class="form-control" id="password">
 
                     </div>
-
 
 
                     <div class="form-check mt-2">

@@ -34,7 +34,7 @@ class TransactionController extends Controller
 
     public function readAllTransaction()
     {
-        return ['message' => $this->MESSAGE_READ_ALL_CART_VALID, 'data' => Transaction::all()];
+        return ['message' => $this->MESSAGE_READ_ALL_TRANSACTION_VALID, 'data' => Transaction::all()];
     }
 
     public function readAllTransactionKeyboard()

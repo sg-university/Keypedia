@@ -151,11 +151,11 @@ class CartController extends Controller
         $user = User::find($userId);
         $cart = $user->cart;
 
-        if (!$cart) {
+        if (!$cart || $cart->keyboards->isEmpty()) {
             return ['message' => $this->MESSAGE_CHECKOUT_CART_BY_USER_ID_INVALID, 'data' => null];
         }
 
-        $cartKeyboards = CartKeyboard::where('cart_id', $cart->id);
+        $cartKeyboards = CartKeyboard::where('cart_id', $cart->id)->get();
 
         $transaction = Transaction::create(['user_id' => $userId]);
         foreach ($cartKeyboards as $cartKeyboard) {
@@ -165,8 +165,6 @@ class CartController extends Controller
                 'keyboard_id' => $keyboard->id,
                 'quantity' => $cartKeyboard->quantity
             ]);
-            $keyboard->stock = $keyboard->stock - $$transactionKeyboard->quantity;
-            $keyboard->save();
 
             $cart->keyboards()->detach($cartKeyboard->keyboard_id);
         }
